@@ -1,9 +1,7 @@
 import re
 import socket
-import pandas as pd
 
 
-# Main event loop
 def reactor(host, port):
     sock = socket.socket()
     sock.bind((host, port))
@@ -64,7 +62,7 @@ def process_request(conn, cli_address):
                             print(
                                 f"Cпортсмен, нагрудный номер {list_input_data[0]} прошёл отсечку {list_input_data[1]} в "
                                 f"{list_input_data[2][0:-2]}")
-                        # write_file(list_input_data)
+                        write_file(match.group())
     finally:
         print(f'{cli_address} quit')
         file.close()
@@ -72,13 +70,12 @@ def process_request(conn, cli_address):
 
 
 def write_file(data):
-    df = pd.DataFrame({
-        'Номер участника': [data[0]],
-        'id канала': [data[1]],
-        'Время': [data[2]],
-        'Номер группы': [data[3]]
-    })
-    df.to_excel('base.xlsx')
+    try:
+        with open('file.txt', mode='a+') as f:
+            f.write(data + '\r')
+        f.close()
+    except:
+        print('writing data to file failed')
 
 
 if __name__ == '__main__':
