@@ -28,10 +28,13 @@ class Sratr_server:
         print(f'Received a connection from {cli_address}')
         mode = 'data'
         try:
-            conn.sendall(b'welcome: commands for work:\r\n'
-                         b'quit - disconnect commands\r\n'
-                         b'data - command for data transfer(default)\r\n')
-            conn.sendall(b'Attention: data entry format - BBBB NN HH:MM:SS.zhq GG\r\n')
+            conn.sendall(b'welcome: teams for work:\r\n'
+                         b'quit - disconnect commands\r\n')
+            conn.sendall(b'Attention: data entry format - BBBB NN HH:MM:SS.zhq GG\r\n'
+                         b'BBBB -- member number\r\n'
+                         b'NN -- channel id N - letter N - number\r\n'
+                         b'HH:MM:SS.zhq -- HH - Hours MM - minutes SS - seconds zhq - tenths of a thousandth\r\n'
+                         b'GG -- group number\r\n')
             while True:
                 line = file.readline()
                 if line:
