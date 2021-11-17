@@ -2,9 +2,10 @@ import re
 import socket
 
 
+
 class Sratr_server:
     def __init__(self):
-        self.regex = r'^\d{4}\s\b\w{2}\b\s\d{2}:\d{2}:\d{2}.\d{3}\s\d{2}$'
+        self.regex = r'^\d{4}\s\b\w{2}\b\s\d{2}:\d{2}:\d{2}.\d{3}\s\d{2}(.*)(?:\\r)$'
 
     def reactor(self, host, port):
         sock = socket.socket()
@@ -30,11 +31,12 @@ class Sratr_server:
         try:
             conn.sendall(b'welcome: teams for work:\r\n'
                          b'quit - disconnect commands\r\n')
-            conn.sendall(b'Attention: data entry format - BBBB NN HH:MM:SS.zhq GG\r\n'
+            conn.sendall(b'Attention: data entry format - BBBB NN HH:MM:SS.zhq GG[CR]\r\n'
                          b'BBBB -- member number\r\n'
                          b'NN -- channel id N - letter N - number\r\n'
                          b'HH:MM:SS.zhq -- HH - Hours MM - minutes SS - seconds zhq - tenths of a thousandth\r\n'
-                         b'GG -- group number\r\n')
+                         b'GG -- group number\r\n'
+                         b'[CR] -- carriage return\r\n')
             while True:
                 line = file.readline()
                 if line:
@@ -58,7 +60,7 @@ class Sratr_server:
                         matches = re.finditer(self.regex, data)
                         for matchNum, match in enumerate(matches):
                             list_input_data = match.group().split(' ')
-                            conn.sendall(b'input data: %a\r\n' % match.group())
+                            conn.sendall(b'input data: %a' % match.group())
                             if list_input_data[3] == '00':
                                 print(
                                     f"Cпортсмен, нагрудный номер {list_input_data[0]} прошёл отсечку {list_input_data[1]} в "
@@ -72,7 +74,7 @@ class Sratr_server:
     def write_file(self, data):
         try:
             with open('file.txt', mode='a+') as f:
-                f.write(data + '\r')
+                f.write(data)
             f.close()
         except:
             print('writing data to file failed')
