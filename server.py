@@ -2,7 +2,6 @@ import re
 import socket
 
 
-
 class Sratr_server:
     def __init__(self):
         self.regex = r'^\d{4}\s\b\w{2}\b\s\d{2}:\d{2}:\d{2}.\d{3}\s\d{2}(.*)(?:\\r)$'
@@ -60,7 +59,7 @@ class Sratr_server:
                         matches = re.finditer(self.regex, data)
                         for matchNum, match in enumerate(matches):
                             list_input_data = match.group().split(' ')
-                            conn.sendall(b'input data: %a' % match.group())
+                            conn.sendall(b'input data: %a\r\n' % match.group())
                             if list_input_data[3] == '00':
                                 print(
                                     f"Cпортсмен, нагрудный номер {list_input_data[0]} прошёл отсечку {list_input_data[1]} в "
@@ -74,7 +73,7 @@ class Sratr_server:
     def write_file(self, data):
         try:
             with open('file.txt', mode='a+') as f:
-                f.write(data)
+                f.write(data + '\r')
             f.close()
         except:
             print('writing data to file failed')
@@ -83,3 +82,4 @@ class Sratr_server:
 if __name__ == '__main__':
     run = Sratr_server()
     run.reactor('localhost', 8080)
+# 1234 C1 12:12:12.123 03\r
