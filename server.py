@@ -59,11 +59,11 @@ class Sratr_server:
                         matches = re.finditer(self.regex, data)
                         for matchNum, match in enumerate(matches):
                             list_input_data = match.group().split(' ')
-                            conn.sendall(b'input data: %a\r\n' % match.group())
-                            if list_input_data[3] == '00':
+                            if list_input_data[3] == '00\\r':
                                 print(
-                                    f"Cпортсмен, нагрудный номер {list_input_data[0]} прошёл отсечку {list_input_data[1]} в "
-                                    f"{list_input_data[2][0:-2]}")
+                                    f"Cпортсмен, нагрудный номер {list_input_data[0]} "
+                                    f"прошёл отсечку {list_input_data[1]} в {list_input_data[2][0:-2]}")
+                                conn.sendall(b'input data: %a\r\n' % match.group())
                             self.write_file(match.group())
         finally:
             print(f'{cli_address} quit')
@@ -82,4 +82,4 @@ class Sratr_server:
 if __name__ == '__main__':
     run = Sratr_server()
     run.reactor('localhost', 8080)
-# 1234 C1 12:12:12.123 03\r
+# 1234 C1 12:12:12.123 00\r
